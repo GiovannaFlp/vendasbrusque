@@ -92,6 +92,7 @@ export function Header() {
                       </svg>
                       Meu Painel
                     </Link>
+                    {session?.user?.isAdmin && (
                     <Link
                       href="/admin"
                       onClick={() => setMenuOpen(false)}
@@ -102,6 +103,7 @@ export function Header() {
                       </svg>
                       Admin
                     </Link>
+                    )}
                     <Link
                       href="/painel/anuncios"
                       onClick={() => setMenuOpen(false)}
