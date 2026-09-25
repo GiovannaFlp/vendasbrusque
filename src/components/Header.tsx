@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { useNotifications } from './NotificationProvider'
+import { Logo } from './Logo'
 
 export function Header() {
   const { data: session } = useSession()
@@ -15,13 +16,8 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-blue-600 text-white font-bold text-lg px-3 py-1.5 rounded-lg">
-              VB
-            </div>
-            <span className="font-bold text-gray-900 text-lg hidden sm:block">
-              VendasBrusque
-            </span>
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <Logo size="sm" />
           </Link>
 
           {/* Busca central */}

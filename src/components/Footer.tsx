@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from './Logo'
 
 export function Footer() {
   return (
@@ -6,11 +7,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="bg-blue-500 text-white font-bold text-lg px-3 py-1.5 rounded-lg">
-                VB
-              </div>
-              <span className="font-bold text-white text-xl">VendasBrusque</span>
+            <div className="mb-4">
+              <Logo size="md" variant="white" />
             </div>
             <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
               O marketplace local de Brusque e região. Compre, venda e negocie com segurança perto de você.
