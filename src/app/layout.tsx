@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { ScrollToTop } from '@/components/ScrollToTop'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +32,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <Providers>
+          <ScrollToTop />
           <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">{children}</main>
