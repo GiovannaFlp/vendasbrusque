@@ -33,6 +33,7 @@ export function MyListingsClient({ listings: initial }: { listings: Listing[] })
         body: JSON.stringify({ status }),
       })
       setListings((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)))
+      router.refresh()
     } finally {
       setLoading(null)
     }

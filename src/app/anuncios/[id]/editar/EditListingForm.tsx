@@ -104,7 +104,8 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
       }
 
       setSuccess(true)
-      setTimeout(() => router.push(`/anuncios/${listing.id}`), 1500)
+      router.push(`/anuncios/${listing.id}`)
+      router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro inesperado')
     } finally {
