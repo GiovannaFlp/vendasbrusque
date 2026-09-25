@@ -101,7 +101,6 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: '✅ Banco configurado com sucesso!',
-      info: 'Login demo: demo@vendasbrusque.com.br / demo123',
     })
   } catch (error) {
     console.error('Setup error:', error)
