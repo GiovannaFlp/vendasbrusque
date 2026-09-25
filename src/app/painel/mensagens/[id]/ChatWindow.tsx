@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 interface Message {
   id: string
   content: string
+  read: boolean
   createdAt: string
   senderId: string
   sender: { id: string; name: string }
@@ -23,12 +24,10 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // Auto scroll para o final
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Polling para novas mensagens (a cada 3 segundos)
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch(`/api/conversas/${conversationId}/mensagens`)
@@ -51,10 +50,10 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
     setInput('')
     setSending(true)
 
-    // Otimistic UI
     const tempMsg: Message = {
       id: `temp-${Date.now()}`,
       content,
+      read: false,
       createdAt: new Date().toISOString(),
       senderId: currentUserId,
       sender: { id: currentUserId, name: 'Você' },
@@ -70,11 +69,8 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
 
       if (res.ok) {
         const saved: Message = await res.json()
-        setMessages((prev) =>
-          prev.map((m) => (m.id === tempMsg.id ? saved : m))
-        )
+        setMessages((prev) => prev.map((m) => (m.id === tempMsg.id ? saved : m)))
       } else {
-        // Remove mensagem otimista em caso de erro
         setMessages((prev) => prev.filter((m) => m.id !== tempMsg.id))
         setInput(content)
       }
@@ -95,11 +91,10 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
   }
 
   function formatTime(dateStr: string) {
-    const d = new Date(dateStr)
     return new Intl.DateTimeFormat('pt-BR', {
       hour: '2-digit',
       minute: '2-digit',
-    }).format(d)
+    }).format(new Date(dateStr))
   }
 
   function formatDateGroup(dateStr: string) {
@@ -107,27 +102,25 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
     const today = new Date()
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1)
-
     if (d.toDateString() === today.toDateString()) return 'Hoje'
     if (d.toDateString() === yesterday.toDateString()) return 'Ontem'
     return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(d)
   }
 
-  // Agrupa mensagens por data
   const groupedMessages: { date: string; messages: Message[] }[] = []
   messages.forEach((msg) => {
     const dateKey = new Date(msg.createdAt).toDateString()
     const group = groupedMessages.find((g) => g.date === dateKey)
-    if (group) {
-      group.messages.push(msg)
-    } else {
-      groupedMessages.push({ date: dateKey, messages: [msg] })
-    }
+    if (group) group.messages.push(msg)
+    else groupedMessages.push({ date: dateKey, messages: [msg] })
   })
+
+  // Última mensagem enviada por mim para mostrar status de leitura
+  const myMessages = messages.filter((m) => m.senderId === currentUserId && !m.id.startsWith('temp-'))
+  const lastMyMsgId = myMessages[myMessages.length - 1]?.id
 
   return (
     <div className="card flex flex-col" style={{ height: '520px' }}>
-      {/* Mensagens */}
       <div className="flex-1 overflow-y-auto p-4 space-y-1 chat-messages">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -140,7 +133,6 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
         ) : (
           groupedMessages.map((group) => (
             <div key={group.date}>
-              {/* Separador de data */}
               <div className="flex items-center justify-center my-4">
                 <div className="bg-gray-100 text-gray-500 text-xs px-3 py-1 rounded-full">
                   {formatDateGroup(group.messages[0].createdAt)}
@@ -153,13 +145,14 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
                 const prevMsg = group.messages[i - 1]
                 const sameSender = prevMsg?.senderId === msg.senderId
                 const showName = !isMe && !sameSender
+                // Mostra status só na última mensagem minha
+                const isLastMine = msg.id === lastMyMsgId
 
                 return (
                   <div
                     key={msg.id}
                     className={`flex ${isMe ? 'justify-end' : 'justify-start'} ${sameSender ? 'mt-0.5' : 'mt-3'}`}
                   >
-                    {/* Avatar */}
                     {!isMe && !sameSender && (
                       <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-600 mr-2 mt-1 flex-shrink-0">
                         {msg.sender.name.charAt(0).toUpperCase()}
@@ -171,19 +164,19 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
                       {showName && (
                         <span className="text-xs text-gray-500 mb-1 ml-1">{msg.sender.name}</span>
                       )}
-                      <div
-                        className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
-                          isMe
-                            ? 'bg-blue-600 text-white rounded-br-sm'
-                            : 'bg-gray-100 text-gray-800 rounded-bl-sm'
-                        } ${isTemp ? 'opacity-70' : ''}`}
-                      >
+                      <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                        isMe ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                      } ${isTemp ? 'opacity-70' : ''}`}>
                         <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                       </div>
                       <span className={`text-xs mt-1 ${isMe ? 'text-right' : ''} text-gray-400`}>
                         {formatTime(msg.createdAt)}
-                        {isMe && !isTemp && <span className="ml-1 opacity-60">lido</span>}
-                        {isTemp && <span className="ml-1 opacity-50">enviando...</span>}
+                        {isTemp && <span className="ml-1 opacity-50"> · enviando</span>}
+                        {isMe && !isTemp && isLastMine && (
+                          <span className={`ml-1 ${msg.read ? 'text-blue-500' : 'opacity-50'}`}>
+                            {msg.read ? ' · lido' : ' · enviado'}
+                          </span>
+                        )}
                       </span>
                     </div>
                   </div>
@@ -195,7 +188,6 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
       <div className="border-t border-gray-100 p-4">
         <form onSubmit={sendMessage} className="flex gap-3 items-end">
           <textarea
@@ -224,9 +216,7 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
             </svg>
           </button>
         </form>
-        <p className="text-xs text-gray-400 mt-1.5 text-center">
-          Shift+Enter para quebrar linha
-        </p>
+        <p className="text-xs text-gray-400 mt-1.5 text-center">Shift+Enter para quebrar linha</p>
       </div>
     </div>
   )
