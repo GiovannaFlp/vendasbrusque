@@ -41,7 +41,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <p>© {new Date().getFullYear()} VendasBrusque. Todos os direitos reservados.</p>
-          <p>Feito com ❤️ em Brusque, SC</p>
+          <p>Feito em Brusque, SC</p>
         </div>
       </div>
     </footer>

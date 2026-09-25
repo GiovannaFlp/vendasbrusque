@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { ListingCard } from '@/components/ListingCard'
+import { CategoryIcon } from '@/components/CategoryIcon'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -25,7 +26,6 @@ export default async function ListingsPage({
 
   const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
 
-  // Filtros
   const where: Record<string, unknown> = { status: 'active' }
 
   if (searchParams.q) {
@@ -49,7 +49,6 @@ export default async function ListingsPage({
   if (searchParams.preco_max) priceFilter.lte = parseFloat(searchParams.preco_max)
   if (Object.keys(priceFilter).length > 0) where.price = priceFilter
 
-  // Ordenação
   let orderBy: Record<string, string> = { createdAt: 'desc' }
   if (searchParams.ordem === 'preco_asc') orderBy = { price: 'asc' }
   if (searchParams.ordem === 'preco_desc') orderBy = { price: 'desc' }
@@ -87,7 +86,6 @@ export default async function ListingsPage({
           <div className="card p-4 sticky top-24">
             <h2 className="font-semibold text-gray-900 mb-4">Filtros</h2>
 
-            {/* Categorias */}
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Categoria</h3>
               <div className="space-y-1">
@@ -111,14 +109,13 @@ export default async function ListingsPage({
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <span>{cat.icon}</span>
+                    <CategoryIcon name={cat.slug} className="w-4 h-4 flex-shrink-0" />
                     {cat.name}
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Condição */}
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Condição</h3>
               <div className="space-y-1">
@@ -143,7 +140,6 @@ export default async function ListingsPage({
               </div>
             </div>
 
-            {/* Faixa de preço */}
             <div>
               <h3 className="text-sm font-medium text-gray-700 mb-2">Preço</h3>
               <form action="/anuncios" method="get" className="space-y-2">
@@ -173,7 +169,6 @@ export default async function ListingsPage({
 
         {/* Lista */}
         <div className="flex-1 min-w-0">
-          {/* Header da lista */}
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h1 className="text-xl font-bold text-gray-900">
@@ -207,7 +202,11 @@ export default async function ListingsPage({
 
           {listings.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
-              <div className="text-6xl mb-4">🔍</div>
+              <div className="w-16 h-16 mx-auto mb-4 text-gray-300">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
               <p className="text-lg font-medium text-gray-600">Nenhum anúncio encontrado</p>
               <p className="text-sm mt-1">Tente outros termos ou remova os filtros</p>
               <Link href="/anuncios" className="btn-secondary mt-4 inline-flex">
@@ -228,15 +227,11 @@ export default async function ListingsPage({
                 ))}
               </div>
 
-              {/* Paginação */}
               {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-8">
                   {page > 1 && (
-                    <Link
-                      href={buildUrl({ pagina: String(page - 1) })}
-                      className="btn-secondary px-4 py-2 text-sm"
-                    >
-                      ← Anterior
+                    <Link href={buildUrl({ pagina: String(page - 1) })} className="btn-secondary px-4 py-2 text-sm">
+                      Anterior
                     </Link>
                   )}
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -246,9 +241,7 @@ export default async function ListingsPage({
                         key={p}
                         href={buildUrl({ pagina: String(p) })}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          p === page
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                          p === page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
                         }`}
                       >
                         {p}
@@ -256,11 +249,8 @@ export default async function ListingsPage({
                     )
                   })}
                   {page < totalPages && (
-                    <Link
-                      href={buildUrl({ pagina: String(page + 1) })}
-                      className="btn-secondary px-4 py-2 text-sm"
-                    >
-                      Próximo →
+                    <Link href={buildUrl({ pagina: String(page + 1) })} className="btn-secondary px-4 py-2 text-sm">
+                      Próximo
                     </Link>
                   )}
                 </div>

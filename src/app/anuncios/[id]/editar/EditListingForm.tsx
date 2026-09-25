@@ -123,13 +123,13 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
       )}
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">
-          ✅ Anúncio atualizado! Redirecionando...
+          Anúncio atualizado! Redirecionando...
         </div>
       )}
 
       {/* Fotos */}
       <div className="card p-5">
-        <h2 className="font-semibold text-gray-900 mb-4">📷 Fotos ({totalImages}/8)</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">Fotos ({totalImages}/8)</h2>
         <div className="grid grid-cols-4 gap-3">
           {existingImages.map((src, i) => (
             <div key={`ex-${i}`} className="relative aspect-square rounded-lg overflow-hidden group bg-gray-100">
@@ -172,7 +172,7 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
 
       {/* Informações */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-gray-900">📝 Informações</h2>
+        <h2 className="font-semibold text-gray-900">Informações</h2>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Título</label>
@@ -208,13 +208,13 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
 
       {/* Preço */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-gray-900">💰 Preço</h2>
+        <h2 className="font-semibold text-gray-900">Preço</h2>
         <div className="grid grid-cols-2 gap-2">
           {[
-            { value: 'fixed', label: '💲 Fixo' },
-            { value: 'negotiable', label: '🤝 Negociável' },
-            { value: 'free', label: '🎁 Grátis' },
-            { value: 'exchange', label: '🔄 Troca' },
+            { value: 'fixed', label: 'Fixo' },
+            { value: 'negotiable', label: 'Negociável' },
+            { value: 'free', label: 'Grátis' },
+            { value: 'exchange', label: 'Troca' },
           ].map((opt) => (
             <button
               key={opt.value}
@@ -238,7 +238,7 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
 
       {/* Localização */}
       <div className="card p-5">
-        <h2 className="font-semibold text-gray-900 mb-4">📍 Localização</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">Localização</h2>
         <input name="location" value={form.location} onChange={handleChange} className="input-field" />
       </div>
 
@@ -254,7 +254,7 @@ export function EditListingForm({ listing, categories }: EditListingFormProps) {
               </svg>
               Salvando...
             </>
-          ) : '💾 Salvar Alterações'}
+          ) : 'Salvar Alterações'}
         </button>
       </div>
     </form>

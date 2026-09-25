@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 interface Category {
   id: string
@@ -61,7 +62,6 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
     setLoading(true)
 
     try {
-      // Upload de imagens
       const imagePaths: string[] = []
       for (const file of images) {
         const fd = new FormData()
@@ -72,7 +72,6 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
         imagePaths.push(data.path)
       }
 
-      // Cria o anúncio
       const res = await fetch('/api/anuncios', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +106,8 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
 
       {/* Fotos */}
       <div className="card p-5">
-        <h2 className="font-semibold text-gray-900 mb-4">📷 Fotos</h2>
+        <h2 className="font-semibold text-gray-900 mb-1">Fotos</h2>
+        <p className="text-xs text-gray-400 mb-4">Máx. 8 fotos · JPG, PNG até 5MB cada. A primeira será a capa.</p>
         <div className="grid grid-cols-4 gap-3">
           {previews.map((src, i) => (
             <div key={i} className="relative aspect-square rounded-lg overflow-hidden group bg-gray-100">
@@ -139,20 +139,12 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
             </button>
           )}
         </div>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          onChange={handleImages}
-        />
-        <p className="text-xs text-gray-400 mt-2">Máx. 8 fotos • JPG, PNG até 5MB cada</p>
+        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImages} />
       </div>
 
       {/* Informações básicas */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-gray-900">📝 Informações</h2>
+        <h2 className="font-semibold text-gray-900">Informações</h2>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -171,7 +163,7 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Categoria <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -186,7 +178,7 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
                     : 'border-gray-200 hover:border-gray-300 text-gray-600'
                 }`}
               >
-                <span>{cat.icon}</span>
+                <CategoryIcon name={cat.slug} className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">{cat.name}</span>
               </button>
             ))}
@@ -213,16 +205,16 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
 
       {/* Preço */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-gray-900">💰 Preço</h2>
+        <h2 className="font-semibold text-gray-900">Preço</h2>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de preço</label>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { value: 'fixed', label: '💲 Preço fixo' },
-              { value: 'negotiable', label: '🤝 Negociável' },
-              { value: 'free', label: '🎁 Grátis' },
-              { value: 'exchange', label: '🔄 Troca' },
+              { value: 'fixed', label: 'Preço fixo' },
+              { value: 'negotiable', label: 'Negociável' },
+              { value: 'free', label: 'Grátis' },
+              { value: 'exchange', label: 'Troca' },
             ].map((opt) => (
               <button
                 key={opt.value}
@@ -262,15 +254,15 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
 
       {/* Detalhes */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-gray-900">🔍 Detalhes</h2>
+        <h2 className="font-semibold text-gray-900">Detalhes</h2>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Condição do item</label>
           <div className="flex gap-3">
             {[
-              { value: 'new', label: '✨ Novo' },
-              { value: 'used', label: '📦 Usado' },
-              { value: 'reconditioned', label: '🔧 Recondicionado' },
+              { value: 'new', label: 'Novo' },
+              { value: 'used', label: 'Usado' },
+              { value: 'reconditioned', label: 'Recondicionado' },
             ].map((opt) => (
               <button
                 key={opt.value}
@@ -289,9 +281,7 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Localização
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Localização</label>
           <input
             name="location"
             value={form.location}
@@ -304,18 +294,10 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
 
       {/* Botões */}
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="btn-secondary flex-1"
-        >
+        <button type="button" onClick={() => router.back()} className="btn-secondary flex-1">
           Cancelar
         </button>
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary flex-1 flex items-center justify-center gap-2"
-        >
+        <button type="submit" disabled={loading} className="btn-primary flex-1 flex items-center justify-center gap-2">
           {loading ? (
             <>
               <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -325,7 +307,7 @@ export function NewListingForm({ categories }: { categories: Category[] }) {
               Publicando...
             </>
           ) : (
-            '✅ Publicar Anúncio'
+            'Publicar Anúncio'
           )}
         </button>
       </div>

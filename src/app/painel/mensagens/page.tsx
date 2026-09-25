@@ -56,7 +56,11 @@ export default async function MessagesPage() {
 
       {conversations.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
-          <div className="text-6xl mb-4">💬</div>
+          <div className="w-16 h-16 mx-auto mb-4 text-gray-300">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </div>
           <p className="text-lg font-medium text-gray-600">Nenhuma conversa ainda</p>
           <p className="text-sm mt-1">Entre em contato com anunciantes para negociar</p>
           <Link href="/anuncios" className="btn-primary mt-4 inline-flex">
@@ -85,7 +89,11 @@ export default async function MessagesPage() {
                   {imgs[0] ? (
                     <Image src={imgs[0]} alt="" width={56} height={56} className="object-cover w-full h-full" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">📦</div>
+                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                      </svg>
+                    </div>
                   )}
                 </div>
 

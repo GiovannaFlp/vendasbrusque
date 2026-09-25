@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { ListingCard } from '@/components/ListingCard'
-import { formatDate } from '@/lib/utils'
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,7 +31,6 @@ export default async function HomePage() {
             O marketplace da sua cidade. Anuncie grátis, negocie pelo chat e feche negócio com vizinhos.
           </p>
 
-          {/* Busca hero */}
           <form action="/anuncios" method="get" className="max-w-2xl mx-auto">
             <div className="flex gap-0 shadow-xl rounded-xl overflow-hidden">
               <input
@@ -68,7 +67,9 @@ export default async function HomePage() {
               href={`/anuncios?categoria=${cat.slug}`}
               className="flex flex-col items-center gap-2 p-3 bg-white rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-sm transition-all group text-center"
             >
-              <span className="text-3xl">{cat.icon}</span>
+              <div className="w-8 h-8 text-gray-500 group-hover:text-blue-600 transition-colors">
+                <CategoryIcon name={cat.slug} className="w-8 h-8" />
+              </div>
               <span className="text-xs font-medium text-gray-600 group-hover:text-blue-600 leading-tight">
                 {cat.name}
               </span>
@@ -91,7 +92,11 @@ export default async function HomePage() {
 
         {recentListings.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-6xl mb-4">📭</div>
+            <div className="w-16 h-16 mx-auto mb-4 text-gray-300">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+            </div>
             <p className="text-lg font-medium">Nenhum anúncio ainda</p>
             <p className="text-sm mt-1">Seja o primeiro a anunciar em Brusque!</p>
             <Link href="/anuncios/novo" className="btn-primary mt-4 inline-flex">

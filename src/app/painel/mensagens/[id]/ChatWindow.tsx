@@ -131,7 +131,9 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
       <div className="flex-1 overflow-y-auto p-4 space-y-1 chat-messages">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
-            <span className="text-5xl mb-3">👋</span>
+            <svg className="w-12 h-12 mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
             <p className="font-medium text-gray-600">Inicie a conversa!</p>
             <p className="text-sm">Envie uma mensagem para negociar</p>
           </div>
@@ -180,8 +182,8 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
                       </div>
                       <span className={`text-xs mt-1 ${isMe ? 'text-right' : ''} text-gray-400`}>
                         {formatTime(msg.createdAt)}
-                        {isMe && !isTemp && <span className="ml-1">✓</span>}
-                        {isTemp && <span className="ml-1">⌛</span>}
+                        {isMe && !isTemp && <span className="ml-1 opacity-60">lido</span>}
+                        {isTemp && <span className="ml-1 opacity-50">enviando...</span>}
                       </span>
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatPrice, formatDate, getConditionLabel } from '@/lib/utils'
+import { CategoryIcon } from './CategoryIcon'
 
 interface ListingCardProps {
   listing: {
@@ -15,6 +16,7 @@ interface ListingCardProps {
     views: number
     category: {
       name: string
+      slug: string
       icon: string
       color: string
     }
@@ -46,9 +48,9 @@ export function ListingCard({ listing }: ListingCardProps) {
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-              <span className="text-4xl">{listing.category.icon}</span>
-              <span className="text-xs mt-1">{listing.category.name}</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
+              <CategoryIcon name={listing.category.slug} className="w-10 h-10" />
+              <span className="text-xs mt-2 text-gray-400">{listing.category.name}</span>
             </div>
           )}
           {condition && (

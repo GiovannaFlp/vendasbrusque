@@ -175,13 +175,13 @@ export default async function ListingDetailPage({
                   href={`/anuncios/${listing.id}/editar`}
                   className="btn-secondary w-full text-center text-sm py-2.5 block"
                 >
-                  ✏️ Editar Anúncio
+                  Editar Anúncio
                 </Link>
                 <Link
                   href="/painel/anuncios"
                   className="btn-secondary w-full text-center text-sm py-2.5 block"
                 >
-                  📋 Meus Anúncios
+                  Meus Anúncios
                 </Link>
               </div>
             ) : (

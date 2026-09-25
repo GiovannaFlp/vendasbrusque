@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { formatPrice, formatDate } from '@/lib/utils'
 import Image from 'next/image'
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Meu Painel' }
@@ -42,10 +43,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Boas-vindas */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">
-          Olá, {session.user.name?.split(' ')[0]}! 👋
+          Olá, {session.user.name?.split(' ')[0]}
         </h1>
         <p className="text-gray-500 mt-1">Bem-vindo ao seu painel de controle</p>
       </div>
@@ -55,7 +55,9 @@ export default async function DashboardPage() {
         <div className="card p-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">📋</span>
+              <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{listingsCount}</p>
@@ -67,7 +69,9 @@ export default async function DashboardPage() {
         <div className="card p-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">✅</span>
+              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{activeListings}</p>
@@ -79,11 +83,13 @@ export default async function DashboardPage() {
         <div className="card p-5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">💬</span>
+              <svg className="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{unreadMessages}</p>
-              <p className="text-xs text-gray-500">Não lidas</p>
+              <p className="text-xs text-gray-500">Mensagens novas</p>
             </div>
           </div>
         </div>
@@ -105,10 +111,7 @@ export default async function DashboardPage() {
 
       {/* Ações rápidas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <Link
-          href="/painel/anuncios"
-          className="card p-5 hover:shadow-md transition-shadow flex items-center gap-4 group"
-        >
+        <Link href="/painel/anuncios" className="card p-5 hover:shadow-md transition-shadow flex items-center gap-4 group">
           <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
             <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -123,10 +126,7 @@ export default async function DashboardPage() {
           </svg>
         </Link>
 
-        <Link
-          href="/painel/mensagens"
-          className="card p-5 hover:shadow-md transition-shadow flex items-center gap-4 group"
-        >
+        <Link href="/painel/mensagens" className="card p-5 hover:shadow-md transition-shadow flex items-center gap-4 group">
           <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
             <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -169,7 +169,9 @@ export default async function DashboardPage() {
                     {imgs[0] ? (
                       <Image src={imgs[0]} alt="" width={56} height={56} className="object-cover w-full h-full" />
                     ) : (
-                      <span className="text-2xl">{listing.category.icon}</span>
+                      <div className="text-gray-400">
+                        <CategoryIcon name={listing.category.slug} className="w-6 h-6" />
+                      </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

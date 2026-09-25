@@ -11,15 +11,15 @@ export async function GET() {
 
     // Cria categorias
     const categories = [
-      { name: 'Veículos', slug: 'veiculos', icon: '🚗', color: 'bg-blue-500' },
-      { name: 'Imóveis', slug: 'imoveis', icon: '🏠', color: 'bg-green-500' },
-      { name: 'Eletrônicos', slug: 'eletronicos', icon: '📱', color: 'bg-purple-500' },
-      { name: 'Móveis e Decoração', slug: 'moveis', icon: '🛋️', color: 'bg-yellow-500' },
-      { name: 'Roupas e Calçados', slug: 'roupas', icon: '👕', color: 'bg-pink-500' },
-      { name: 'Serviços', slug: 'servicos', icon: '🔧', color: 'bg-orange-500' },
-      { name: 'Alimentos', slug: 'alimentos', icon: '🍽️', color: 'bg-red-500' },
-      { name: 'Esportes', slug: 'esportes', icon: '⚽', color: 'bg-teal-500' },
-      { name: 'Outros', slug: 'outros', icon: '📦', color: 'bg-gray-500' },
+      { name: 'Veículos', slug: 'veiculos', icon: 'veiculos', color: 'bg-blue-500' },
+      { name: 'Imóveis', slug: 'imoveis', icon: 'imoveis', color: 'bg-green-500' },
+      { name: 'Eletrônicos', slug: 'eletronicos', icon: 'eletronicos', color: 'bg-purple-500' },
+      { name: 'Móveis e Decoração', slug: 'moveis', icon: 'moveis', color: 'bg-yellow-500' },
+      { name: 'Roupas e Calçados', slug: 'roupas', icon: 'roupas', color: 'bg-pink-500' },
+      { name: 'Serviços', slug: 'servicos', icon: 'servicos', color: 'bg-orange-500' },
+      { name: 'Alimentos', slug: 'alimentos', icon: 'alimentos', color: 'bg-red-500' },
+      { name: 'Esportes', slug: 'esportes', icon: 'esportes', color: 'bg-teal-500' },
+      { name: 'Outros', slug: 'outros', icon: 'outros', color: 'bg-gray-500' },
     ]
 
     for (const cat of categories) {
