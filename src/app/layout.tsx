@@ -4,6 +4,7 @@ import { Providers } from './providers'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { ScrollToTop } from '@/components/ScrollToTop'
+import { Suspense } from 'react'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,7 +33,9 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <Providers>
-          <ScrollToTop />
+          <Suspense fallback={null}>
+            <ScrollToTop />
+          </Suspense>
           <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">{children}</main>

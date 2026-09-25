@@ -8,8 +8,12 @@
   * {
     box-sizing: border-box;
   }
+  html {
+    scroll-behavior: auto !important;
+  }
   body {
     @apply font-sans bg-gray-50 text-gray-900 antialiased;
+    overscroll-behavior: none;
   }
   a {
     @apply text-inherit no-underline;
