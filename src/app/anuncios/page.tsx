@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { prisma } from '@/lib/prisma'
 import { ListingCard } from '@/components/ListingCard'
 import { CategoryIcon } from '@/components/CategoryIcon'
+import { SortSelect } from './SortSelect'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -186,18 +187,14 @@ export default async function ListingsPage({
 
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-600">Ordenar:</label>
-              <select
-                onChange={(e) => {
-                  window.location.href = buildUrl({ ordem: e.target.value || undefined })
-                }}
-                defaultValue={searchParams.ordem || ''}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Mais recentes</option>
-                <option value="preco_asc">Menor preço</option>
-                <option value="preco_desc">Maior preço</option>
-                <option value="mais_vistos">Mais vistos</option>
-              </select>
+              <SortSelect
+                currentOrder={searchParams.ordem}
+                baseUrl={`/anuncios?${new URLSearchParams(
+                  Object.fromEntries(
+                    Object.entries(searchParams).filter(([k, v]) => k !== 'ordem' && k !== 'pagina' && v)
+                  ) as Record<string, string>
+                ).toString()}`}
+              />
             </div>
           </div>
 
