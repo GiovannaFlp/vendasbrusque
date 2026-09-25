@@ -21,12 +21,25 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
+  // Scroll apenas dentro do container do chat — não afeta a página
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    const container = chatContainerRef.current
+    if (!container) return
+    container.scrollTo({ top: container.scrollHeight, behavior })
+  }, [])
+
+  // Scroll imediato ao carregar
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    scrollToBottom('instant')
+  }, [scrollToBottom])
+
+  // Scroll suave ao receber nova mensagem
+  useEffect(() => {
+    scrollToBottom('smooth')
+  }, [messages, scrollToBottom])
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -115,13 +128,17 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
     else groupedMessages.push({ date: dateKey, messages: [msg] })
   })
 
-  // Última mensagem enviada por mim para mostrar status de leitura
   const myMessages = messages.filter((m) => m.senderId === currentUserId && !m.id.startsWith('temp-'))
   const lastMyMsgId = myMessages[myMessages.length - 1]?.id
 
   return (
     <div className="card flex flex-col" style={{ height: '520px' }}>
-      <div className="flex-1 overflow-y-auto p-4 space-y-1 chat-messages">
+      {/* Container de mensagens com scroll próprio */}
+      <div
+        ref={chatContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-1"
+        style={{ overscrollBehavior: 'contain' }}
+      >
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
             <svg className="w-12 h-12 mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,7 +162,6 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
                 const prevMsg = group.messages[i - 1]
                 const sameSender = prevMsg?.senderId === msg.senderId
                 const showName = !isMe && !sameSender
-                // Mostra status só na última mensagem minha
                 const isLastMine = msg.id === lastMyMsgId
 
                 return (
@@ -185,17 +201,17 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
             </div>
           ))
         )}
-        <div ref={bottomRef} />
       </div>
 
-      <div className="border-t border-gray-100 p-4">
+      {/* Input */}
+      <div className="border-t border-gray-100 p-4 flex-shrink-0">
         <form onSubmit={sendMessage} className="flex gap-3 items-end">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Digite uma mensagem... (Enter para enviar)"
+            placeholder="Digite uma mensagem..."
             rows={1}
             maxLength={1000}
             className="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none leading-relaxed"
@@ -216,7 +232,7 @@ export function ChatWindow({ conversationId, currentUserId, initialMessages }: C
             </svg>
           </button>
         </form>
-        <p className="text-xs text-gray-400 mt-1.5 text-center">Shift+Enter para quebrar linha</p>
+        <p className="text-xs text-gray-400 mt-1.5 text-center">Enter para enviar · Shift+Enter para quebrar linha</p>
       </div>
     </div>
   )
