@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { ListingCard } from '@/components/ListingCard'
 import { CategoryIcon } from '@/components/CategoryIcon'
 import Link from 'next/link'
