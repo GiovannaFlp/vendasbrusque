@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { v4 as uuidv4 } from 'uuid'
+import { put } from '@vercel/blob'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -28,16 +26,13 @@ export async function POST(req: NextRequest) {
     }
 
     const ext = file.name.split('.').pop() || 'jpg'
-    const filename = `${uuidv4()}.${ext}`
-    const uploadDir = join(process.cwd(), 'public', 'uploads')
+    const filename = `uploads/${session.user.id}-${Date.now()}.${ext}`
 
-    await mkdir(uploadDir, { recursive: true })
+    const blob = await put(filename, file, {
+      access: 'public',
+    })
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    await writeFile(join(uploadDir, filename), buffer)
-
-    return NextResponse.json({ path: `/uploads/${filename}` })
+    return NextResponse.json({ path: blob.url })
   } catch (error) {
     console.error('Upload error:', error)
     return NextResponse.json({ error: 'Erro ao fazer upload' }, { status: 500 })
