@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma'
-import { prisma } from '@/lib/prisma'
 import { ListingCard } from '@/components/ListingCard'
 import { CategoryIcon } from '@/components/CategoryIcon'
 import { SortSelect } from './SortSelect'
@@ -80,6 +79,12 @@ export default async function ListingsPage({
     return `/anuncios?${p.toString()}`
   }
 
+  const sortBaseUrl = `/anuncios?${new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(searchParams).filter(([k, v]) => k !== 'ordem' && k !== 'pagina' && v)
+    ) as Record<string, string>
+  ).toString()}`
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -94,9 +99,7 @@ export default async function ListingsPage({
                 <Link
                   href={buildUrl({ categoria: undefined })}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                    !searchParams.categoria
-                      ? 'bg-blue-50 text-blue-700 font-medium'
-                      : 'text-gray-600 hover:bg-gray-50'
+                    !searchParams.categoria ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   Todas as categorias
@@ -106,9 +109,7 @@ export default async function ListingsPage({
                     key={cat.id}
                     href={buildUrl({ categoria: cat.slug })}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                      searchParams.categoria === cat.slug
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-50'
+                      searchParams.categoria === cat.slug ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     <CategoryIcon name={cat.slug} className="w-4 h-4 flex-shrink-0" />
@@ -131,9 +132,7 @@ export default async function ListingsPage({
                     key={opt.value}
                     href={buildUrl({ condicao: opt.value || undefined })}
                     className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                      (searchParams.condicao || '') === opt.value
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-50'
+                      (searchParams.condicao || '') === opt.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     {opt.label}
@@ -147,23 +146,9 @@ export default async function ListingsPage({
               <form action="/anuncios" method="get" className="space-y-2">
                 {searchParams.q && <input type="hidden" name="q" value={searchParams.q} />}
                 {searchParams.categoria && <input type="hidden" name="categoria" value={searchParams.categoria} />}
-                <input
-                  type="number"
-                  name="preco_min"
-                  placeholder="Mínimo (R$)"
-                  defaultValue={searchParams.preco_min}
-                  className="input-field text-sm"
-                />
-                <input
-                  type="number"
-                  name="preco_max"
-                  placeholder="Máximo (R$)"
-                  defaultValue={searchParams.preco_max}
-                  className="input-field text-sm"
-                />
-                <button type="submit" className="btn-primary w-full text-sm py-2">
-                  Aplicar
-                </button>
+                <input type="number" name="preco_min" placeholder="Mínimo (R$)" defaultValue={searchParams.preco_min} className="input-field text-sm" />
+                <input type="number" name="preco_max" placeholder="Máximo (R$)" defaultValue={searchParams.preco_max} className="input-field text-sm" />
+                <button type="submit" className="btn-primary w-full text-sm py-2">Aplicar</button>
               </form>
             </div>
           </div>
@@ -174,27 +159,15 @@ export default async function ListingsPage({
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
               <h1 className="text-xl font-bold text-gray-900">
-                {searchParams.q
-                  ? `Resultados para "${searchParams.q}"`
-                  : activeCategory
-                  ? activeCategory.name
-                  : 'Todos os Anúncios'}
+                {searchParams.q ? `Resultados para "${searchParams.q}"` : activeCategory ? activeCategory.name : 'Todos os Anúncios'}
               </h1>
               <p className="text-sm text-gray-500 mt-0.5">
                 {total.toLocaleString('pt-BR')} anúncio{total !== 1 ? 's' : ''} encontrado{total !== 1 ? 's' : ''}
               </p>
             </div>
-
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-600">Ordenar:</label>
-              <SortSelect
-                currentOrder={searchParams.ordem}
-                baseUrl={`/anuncios?${new URLSearchParams(
-                  Object.fromEntries(
-                    Object.entries(searchParams).filter(([k, v]) => k !== 'ordem' && k !== 'pagina' && v)
-                  ) as Record<string, string>
-                ).toString()}`}
-              />
+              <SortSelect currentOrder={searchParams.ordem} baseUrl={sortBaseUrl} />
             </div>
           </div>
 
@@ -207,50 +180,29 @@ export default async function ListingsPage({
               </div>
               <p className="text-lg font-medium text-gray-600">Nenhum anúncio encontrado</p>
               <p className="text-sm mt-1">Tente outros termos ou remova os filtros</p>
-              <Link href="/anuncios" className="btn-secondary mt-4 inline-flex">
-                Limpar filtros
-              </Link>
+              <Link href="/anuncios" className="btn-secondary mt-4 inline-flex">Limpar filtros</Link>
             </div>
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                 {listings.map((listing) => (
-                  <ListingCard
-                    key={listing.id}
-                    listing={{
-                      ...listing,
-                      createdAt: listing.createdAt.toISOString(),
-                    }}
-                  />
+                  <ListingCard key={listing.id} listing={{ ...listing, createdAt: listing.createdAt.toISOString() }} />
                 ))}
               </div>
 
               {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-8">
-                  {page > 1 && (
-                    <Link href={buildUrl({ pagina: String(page - 1) })} className="btn-secondary px-4 py-2 text-sm">
-                      Anterior
-                    </Link>
-                  )}
+                  {page > 1 && <Link href={buildUrl({ pagina: String(page - 1) })} className="btn-secondary px-4 py-2 text-sm">Anterior</Link>}
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     const p = Math.max(1, Math.min(totalPages - 4, page - 2)) + i
                     return (
-                      <Link
-                        key={p}
-                        href={buildUrl({ pagina: String(p) })}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          p === page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
+                      <Link key={p} href={buildUrl({ pagina: String(p) })}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${p === page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}>
                         {p}
                       </Link>
                     )
                   })}
-                  {page < totalPages && (
-                    <Link href={buildUrl({ pagina: String(page + 1) })} className="btn-secondary px-4 py-2 text-sm">
-                      Próximo
-                    </Link>
-                  )}
+                  {page < totalPages && <Link href={buildUrl({ pagina: String(page + 1) })} className="btn-secondary px-4 py-2 text-sm">Próximo</Link>}
                 </div>
               )}
             </>
